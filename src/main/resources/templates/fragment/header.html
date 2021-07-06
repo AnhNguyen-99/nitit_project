@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header class="header-main_area"  th:fragment="header" >
+    <div class="header-top_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="ht-left_area">
+                        <div class="header-shipping_area">
+                            <ul>
+                                <li>
+                                    <span>Telephone Enquiry:</span>
+                                    <a href="callto://+123123321345">(+123) 123 321 345</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="ht-right_area">
+                        <div class="ht-menu">
+                            <ul>
+                                </li>
+                                <a href="/client/products" style="margin: 7px 10px 0 0; text-transform: uppercase; font-size: 12px;">
+                                    Sản phẩm
+                                </a>
+                                <li>
+                                <li><a href="javascript:void(0)">Ngôn ngữ <i class="fa fa-chevron-down"></i></a>
+                                    <ul class="ht-dropdown">
+                                        <li class="active"><a href="javascript:void(0)"><img
+                                                th:src="@{/client/images/menu/icon/1.jpg}" alt="JB's Language Icon">English</a>
+                                        </li>
+                                        <li><a href="javascript:void(0)"><img th:src="@{/client/images/menu/icon/2.jpg}"
+                                                                              alt="JB's Language Icon">Français</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a sec:authorize="isAuthenticated()" style="text-transform: lowercase">
+                                    [[${#httpServletRequest.remoteUser}]]
+                                    <i class="fa fa-chevron-down"></i></a>
+                                    <div sec:authorize="hasAnyRole('USER', 'ADMIN')">
+                                        <ul class="ht-dropdown ht-my_account">
+                                            <li sec:authorize="hasAnyRole('ADMIN')"><a th:href="@{/admin/home}">Trang quản trị</a></li>
+                                            <li><a th:href="@{/user/detail}">Tài khoản của tôi</a></li>
+                                            <li><a th:href="@{'/order/history'}">Lịch sử đơn hàng</a></li>
+                                            <li class="active"><a th:href="@{/logout}">Đăng xuất</a></li>
+                                        </ul>
+                                    </div>
+
+                                </li>
+                                <li><a sec:authorize="isAnonymous()">Đăng nhập<i class="fa fa-chevron-down"></i></a>
+                                    <ul class="ht-dropdown ht-my_account">
+                                        <li><a href="/registry">Đăng ký</a></li>
+                                        <li class="active"><a th:href="@{/login}">Đăng nhập</a></li>
+                                    </ul>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-middle_area d-none d-lg-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="header-logo">
+                        <a th:href="@{/client/home}">
+                            <img th:src="@{/client/images/menu/logo/1.png}" alt="Hiraola's Header Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="hm-form_area">
+                        <form th:action="@{/client/products}" th:object="${watch}" method="get" class="hm-searchbox">
+                            <input type="search" th:field="*{name}" placeholder="Nhập tên sản phẩm cần tìm kiếm ..." >
+                            <button class="li-btn" type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom_area header-sticky stick">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 d-lg-none d-block">
+                    <div class="header-logo">
+                        <a href="index.html">
+                            <img  th:src="@{/client/images/menu/logo/2.png}" src="assets/images/menu/logo/2.png" alt="Hiraola's Header Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-9 d-none d-lg-block position-static">
+                    <div class="main-menu_area">
+                        <nav>
+
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-8 col-sm-8">
+                    <div class="header-right_area">
+                        <ul>
+                            <li>
+                                <a href="/client/wishlist" class="wishlist-btn">
+                                    <i class="ion-android-favorite-outline"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#mobileMenu"
+                                   class="mobile-menu_btn toolbar-btn color--white d-lg-none d-block">
+                                    <i class="ion-navicon"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/cart}" >
+                                    <i class="ion-bag"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>

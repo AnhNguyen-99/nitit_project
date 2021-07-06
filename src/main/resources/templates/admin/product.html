@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Quản lý sản phẩm</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/toastr/toastr.min.css}"/>
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+
+</head>
+<body>
+
+<div class="container-scroller">
+
+
+    <div th:replace="~{/fragment/header_admin :: header_admin}"></div>
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/product}">
+                        <span class="menu-title">Quản lý sản phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/brand}">
+                        <span class="menu-title">Quản lý thương hiệu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/order}">
+                        <span class="menu-title">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/chart}">
+                        <span class="menu-title">Thống kê</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h1>Quản lý sản phẩm</h1>
+                    <form class="form-inline my-2 my-lg-0" th:action="@{/admin/product}" th:object="${watchFind}" method="get">
+                        <input class="form-control mr-sm-2" th:field="*{name}" type="search" placeholder="Search"
+                               aria-label="Search">
+                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                    </form>
+                </div>
+                <h2 th:if="${watchFind.getName() != null && watchFind.getName() != ''}" th:text="'Kết quả tìm kiếm cho ' +${watchFind.getName()}+' :'"></h2>
+
+                <button type="button" class="btn btn-primary" id="new-product" data-toggle="modal"
+                        style="margin-bottom: 20px">
+                    Thêm mới sản phẩm
+                </button>
+
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-info">
+                                <tr>
+                                    <th colspan="1">
+                                        STT
+                                    </th>
+                                    <th colspan="1">
+                                        Mã sản phẩm
+                                    </th>
+                                    <th colspan="2">
+                                        Tên sản phẩm
+                                    </th>
+                                    <th colspan="1">
+                                        Thương hiệu
+                                    </th>
+                                    <th colspan="1">
+                                        Miêu tả
+                                    </th>
+                                    <th colspan="1">
+                                        Giá gốc
+                                    </th>
+                                    <th colspan="2">
+                                        Giá bán
+                                    </th>
+                                    <th colspan="2">
+                                        Thao tác
+                                    </th>
+                                    <th colspan="1">
+                                        Kho ảnh
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="watch, i : ${listWatch.getContent()}">
+                                    <td colspan="1" th:text="${i.count}"></td>
+                                    <td colspan="1" th:text="${watch.getCode()}"></td>
+                                    <td colspan="2" th:text="${watch.getName()}"></td>
+                                    <td colspan="1" th:text="${watch.getBrandName()}"></td>
+                                    <td colspan="1" th:text="${watch.getDescription()}"
+                                        style="overflow: hidden; display: block;
+                                        display: -webkit-box; -webkit-box-orient: vertical;
+                                         -webkit-line-clamp: 1;">
+                                    </td>
+                                    <td colspan="1" th:text="${watch.getPrice() + ' vnđ'}"></td>
+                                    <td colspan="2" th:text="${watch.getSalePrice() + ' vnđ'}"></td>
+                                    <td colspan="2">
+                                        <i class="far fa-edit btn-edit-product" title="Edit product"
+                                           th:attr="idWatch=${watch.getId()}" style="cursor: pointer">
+                                        </i>
+                                        <i class="far fa-trash-alt btn-delete-product" title="Delete product"
+                                           th:attr="idWatch=${watch.getId()}" style="cursor: pointer">
+                                        </i>
+                                    </td>
+                                    <td colspan="1">
+                                        <a th:href="@{'/admin/images/' + ${watch.getId()}}">
+                                            <i class="mdi mdi-folder-multiple-image tooltip-test" title="List images"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <nav style="margin-top: 50px" th:if="${listWatch.getContent().size >0}">
+                    <ul class="pagination">
+                        <th:block th:each="i: ${#numbers.sequence(0, listWatch.getTotalPages() - 1)}">
+                            <li class="page-item active" th:if="${listWatch.number == i}" aria-current="page">
+                                <a class="page-link" th:text="${i+1}"><span class="sr-only"></span></a>
+                            </li>
+                            <li class="page-item"  th:unless="${listWatch.number == i}">
+                                <a class="page-link" th:text="${i+1}" th:href="@{''(
+                                                                                   page=${i},
+                                                                                   size= ${param.size},
+                                                                                   name =${param.name}
+                                                                                   )}">
+
+                                </a>
+                            </li>
+                        </th:block>
+                    </ul>
+                </nav>
+
+            </div>
+
+
+            <!-- Modal create product -->
+            <div class="modal fade" id="modal-create-product" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Thêm mới sản phẩm</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div style="text-align: center">
+                                <span>Ảnh upload gần đây (có thể chọn nhiều ảnh)</span>
+                                <img style="max-width: 200px; height: auto" src="https://www.vietnamprintpack.com/images/default.jpg" class="product-main-image">
+                            </div>
+
+                            <div style="text-align: center; margin-top: 20px">
+                                <input type='file'  id="input-select-img-product"/>
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="margin-top: 20px">
+                                <label>Mã đồng hồ: (*)</label>
+                                <input type="text" class="form-control" id="input-product-code">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="margin-top: 20px">
+                                <label>Tên đồng hồ: (*)</label>
+                                <input type="text" class="form-control" id="input-product-name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Thương hiệu: (*)</label>
+                                <select class="form-control" id="input-product-category">
+                                    <option th:each="brand : ${listBrand}" th:value="${brand.getId()}" th:text="${brand.getName()}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group margin-bottom-15">
+                                <label>Mô tả: (*)</label>
+                                <textarea type="text" class="form-control" id="input-product-desc"></textarea>
+                            </div>
+
+                            <div class="form-group margin-bottom-15">
+                                <label>Tính năng:</label>
+                                <textarea type="text" class="form-control" id="input-product-feature"></textarea>
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giá gốc: (*)</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-price">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giảm giá:</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-reduce-price">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giá bán: (*)</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-sale-price">
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary btn-save-product">Thêm mới</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Modal edit -->
+            <div class="modal fade" id="modal-update-product" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Cập nhật sản phẩm</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div style="text-align: center">
+                                <span>Ảnh upload gần đây (có thể chọn nhiều ảnh)</span>
+                                <img style="max-width: 200px; height: auto" src="https://www.vietnamprintpack.com/images/default.jpg" class="product-main-image">
+                            </div>
+
+                            <div style="text-align: center; margin-top: 20px">
+                                <input type='file'  id="input-select-img-product-update"/>
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="margin-top: 20px">
+                                <label>Mã sản phẩm:</label>
+                                <input type="text" class="form-control" id="input-product-code-update">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="margin-top: 20px">
+                                <label>Tên sản phẩm:</label>
+                                <input type="text" class="form-control" id="input-product-name-update">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Thương hiệu:</label>
+                                <select class="form-control" id="input-product-category-update">
+                                    <option th:each="brand : ${listBrand}" th:value="${brand.getId()}" th:text="${brand.getName()}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group margin-bottom-15">
+                                <label>Mô tả:</label>
+                                <textarea type="text" class="form-control" id="input-product-desc-update"></textarea>
+                            </div>
+
+                            <div class="form-group margin-bottom-15">
+                                <label>Đặc tính:</label>
+                                <textarea type="text" class="form-control" id="input-product-feature-update"></textarea>
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giá gốc:</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-price-update">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giảm giá:</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-reduce-price-update">
+                            </div>
+
+                            <div class="form-group margin-bottom-15" style="width: 100%">
+                                <label>Giá bán:</label>
+                                <input type="number" class="form-control" style="display: block; margin: 5px ;width: 100%" id="input-product-sale-price-update">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary" id="btn-update-product">Lưu thay đổi</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer class="footer" th:replace="/fragment/footer_admin :: footer_admin"></footer>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.9.0/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+<script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>
+<script th:src="@{/js/misc.js}"></script>
+<script th:src="@{/toastr/toastr.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/admin-brand.js}"></script>
+<script th:src="@{/js/admin-product.js}"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Quản lý đơn hàng</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{/toastr/toastr.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+
+</head>
+<body>
+
+<div class="container-scroller">
+
+
+    <div th:replace="~{/fragment/header_admin :: header_admin}"></div>
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/product}">
+                        <span class="menu-title">Quản lý sản phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/brand}">
+                        <span class="menu-title">Quản lý thương hiệu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/order}">
+                        <span class="menu-title">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/chart}">
+                        <span class="menu-title">Thống kê</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h1>Quản lý đơn hàng</h1>
+                </div>
+
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body" style="padding: 5px">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-info">
+                                <tr>
+                                    <th colspan="1">STT</th>
+                                    <th colspan="1">
+                                        Tên khách hàng
+                                    </th>
+                                    <th colspan="1">
+                                        Tên tài khoản
+                                    </th>
+                                    <th colspan="1">
+                                        Địa chỉ
+                                    </th>
+                                    <th colspan="1">
+                                        Số điện thoại
+                                    </th>
+                                    <th colspan="1">
+                                        Tổng thanh toán<br>(vnđ)
+                                    </th>
+                                    <th colspan="1">
+                                        Ngày đặt
+                                    </th>
+                                    <th colspan="1">
+                                        Trạng thái
+                                    </th>
+                                    <th colspan="1">
+                                        Xác nhận
+                                    </th>
+                                    <th colspan="1">
+                                        Chi tiết
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="order, i : ${orderPage.getContent()}">
+                                    <td colspan="1" th:text="${i.count}"></td>
+                                    <td colspan="1" th:text="${order.getFullName()}"></td>
+                                    <td colspan="1" th:text="${order.getReceiver()}"></td>
+                                    <td colspan="1" th:text="${order.getAddress()}"></td>
+                                    <td colspan="1" th:text="${order.getPhoneNumber()}"></td>
+                                    <td colspan="1" th:text="${order.getTotalPayment()}"></td>
+                                    <td colspan="1" th:text="${order.getOrderDate()}"></td>
+                                    <td colspan="1" th:if="${order.getStatus() == 0}" style="background: #a80000; color: #ffffff">
+                                        Đang chờ xác nhận
+                                    </td>
+                                    <td colspan="1" th:if="${order.getStatus() == 1}" style="background: #01d8ec">
+                                        Đã xác nhận
+                                    </td>
+                                    <td colspan="1" th:if="${order.getStatus() == 2}" style="background: #efb704">
+                                        Đã xác nhận
+                                    </td>
+                                    <td colspan="1" th:if="${order.getStatus() == 3}" style="background: #00ee05">
+                                        Đã giao hàng
+                                    </td>
+                                    <td colspan="1">
+                                        <button th:attr="idOrder=${order.getId()}" class="btn btn-success browse-menus" style="width: 50px; height: 30px; padding: 5px; font-size: 12px">
+                                            Duyệt
+                                        </button>
+                                    </td>
+                                    <td colspan="1">
+                                        <a th:href="@{'/admin/order/detail/'+${order.getId()}}">
+                                            <i class="far fa-edit btn-edit-cate" title="Order Detail" style="cursor: pointer"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <nav style="margin-top: 50px" aria-label="..." th:if="${orderPage.getContent().size()>0}">
+                    <ul class="pagination">
+                        <th:block th:each="i: ${#numbers.sequence(0, orderPage.getTotalPages() - 1)}">
+                            <li class="page-item active" th:if="${orderPage.number == i}" aria-current="page">
+                                <a class="page-link" th:href="${''}" th:text="${i+1}"><span class="sr-only"></span></a>
+                            </li>
+                            <li class="page-item"  th:unless="${orderPage.number == i}"><a class="page-link" th:text="${i+1}"
+                                                                                                 th:href="@{''(
+                                                                                        page= ${i},
+                                                                                        limit = ${param.limit}
+                                                                                      )}">
+
+                        </a></li>
+                        </th:block>
+                    </ul>
+                </nav>
+
+            </div>
+
+            <footer class="footer" th:replace="/fragment/footer_admin :: footer_admin"></footer>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.9.0/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+<script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>
+<script th:src="@{/js/misc.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script th:src="@{/toastr/toastr.min.js}"></script>
+<script th:src="@{/js/admin-order.js}"></script>
+</body>
+</html>

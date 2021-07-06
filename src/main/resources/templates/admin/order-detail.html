@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Chi tiết đơn hàng</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{/toastr/toastr.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+
+</head>
+<body>
+
+<div class="container-scroller">
+
+
+    <div th:replace="~{/fragment/header_admin :: header_admin}"></div>
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/product}">
+                        <span class="menu-title">Quản lý sản phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/brand}">
+                        <span class="menu-title">Quản lý thương hiệu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/order}">
+                        <span class="menu-title">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/chart}">
+                        <span class="menu-title">Thống kê</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h1 th:text="'Đơn hàng số: '+${order.getId()}"></h1>
+                </div>
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 style="margin-top: 30px">Tổng số sản phẩm: <span th:text="${listOrderWatch.size()}"></span></h3>
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th colspan="1">STT</th>
+                                    <th colspan="4">Ảnh sản phẩm</th>
+                                    <th colspan="3">Tên</th>
+                                    <th colspan="2">Số lượng</th>
+                                    <th colspan="2">Giá bán</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="ow,i : ${listOrderWatch}">
+                                    <td colspan="1" th:text="${i.count}" ></td>
+                                    <td colspan="4">
+                                        <a>
+                                            <img style="width: auto; max-height: 250px;" th:src="${ow.getImage()}">
+                                        </a>
+                                    </td>
+                                    <td colspan="3"><a th:text="${ow.getNameWatch()}" ></a>
+                                    </td>
+                                    <td colspan="2" th:text="${ow.getCount()}">
+                                    </td>
+                                    <td colspan="2" th:text="${ow.getPrice()}+' vnđ'"></td>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th colspan="10">Tên người nhận</th>
+                                    <th colspan="2" th:text="${order.getFullName()}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Tên tài khoản</th>
+                                    <th colspan="2" th:text="${order.getReceiver()}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Số điện thoại</th>
+                                    <th colspan="2" th:text="${order.getPhoneNumber()}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Địa chỉ</th>
+                                    <th colspan="2" th:text="${order.getAddress()}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Ngày đặt hàng</th>
+                                    <th colspan="2" th:text="${order.getOrderDate()}"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Tổng thanh toán</th>
+                                    <th colspan="2" th:text="${order.getTotalPrice()}+' vnđ'"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Phí giao hàng</th>
+                                    <th colspan="2" th:text="${order.getShipFee()}+' vnđ'"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Tổng thanh toán</th>
+                                    <th colspan="2" th:text="${order.getTotalPayment()}+' vnđ'"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">Trạng thái đơn hàng</th>
+                                    <th colspan="2" th:if="${order.getStatus() == 0}" style="background: #a80000; color: #ffffff">
+                                        Đang chờ xác nhận
+                                    </th>
+                                    <th colspan="2" th:if="${order.getStatus() == 1}" style="background: #01d8ec">
+                                        Đã xác nhận
+                                    </th>
+                                    <th colspan="2" th:if="${order.getStatus() == 2}" style="background: #efb704">
+                                        Đang giao hàng
+                                    </th>
+                                    <th colspan="2" th:if="${order.getStatus() == 3}" style="background: #00ee05">
+                                        Đã giao hàng
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        Thay đổi trạng thái
+                                    </th>
+                                    <th colspan="2">
+                                        <select th:attr="idOrders=${order.getId()}" id="change-status" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                            <option selected value="-1">Thay đổi</option>
+                                            <option value="0">Đang chờ xác nhận</option>
+                                            <option value="1">Đã xác nhận</option>
+                                            <option value="2">Đã xác nhận</option>
+                                            <option value="3">Đã giao hàng</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                    <div style="text-align: right">
+                        <a class="btn btn-primary" th:href="@{'/admin/order'}">Trở lại danh sách đơn hàng</a>
+                    </div>
+            </div>
+
+            <footer class="footer" th:replace="/fragment/footer_admin :: footer_admin"></footer>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.9.0/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+<script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>
+<script th:src="@{/js/misc.js}"></script>
+<script th:src="@{/toastr/toastr.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/admin-brand.js}"></script>
+<script th:src="@{/js/admin-order.js}"></script>
+
+
+</body>
+</html>
